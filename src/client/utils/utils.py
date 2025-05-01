@@ -1,3 +1,5 @@
+import socket
+
 def send_string(sock: socket.socket, s: str) -> None:
     sock.sendall(s.encode() + b"\0")
 

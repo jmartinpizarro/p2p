@@ -1,4 +1,6 @@
 from src.client.client import *
+import argparse
+import sys
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Cliente P2P')
