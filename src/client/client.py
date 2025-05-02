@@ -4,7 +4,7 @@ import argparse
 import os
 import sys
 
-from src.client.utils.utils import *
+from utils.utils import *
 
 class P2PClient:
     def __init__(self, server_host: str, server_port: int):

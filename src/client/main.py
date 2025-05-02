@@ -1,4 +1,4 @@
-from src.client.client import *
+from client import P2PClient
 import argparse
 import sys
 
@@ -14,38 +14,57 @@ if __name__ == '__main__':
             cmd = input('c> ').strip()
             if not cmd:
                 continue
-            parts = cmd.split(' ', 2)
-            action = parts[0].upper()
+
+            # Partimos en tokens completos para detectar comandos multi-palabra
+            tokens = cmd.split()
+            action = tokens[0].upper()
+
+            # Salir
             if action == 'QUIT':
                 if client.username:
                     client.disconnect()
                 break
-            elif action == 'REGISTER' and len(parts) == 2:
-                client.register(parts[1])
-            elif action == 'UNREGISTER' and len(parts) == 2:
-                client.unregister(parts[1])
-            elif action == 'CONNECT' and len(parts) == 2:
-                client.connect(parts[1])
-            elif action == 'PUBLISH' and len(parts) == 3:
-                file_path, desc = parts[1], parts[2]
-                client.publish(file_path, desc)
-            elif action == 'DELETE' and len(parts) == 2:
-                client.delete(parts[1])
-            elif action == 'LIST_USERS':
-                client.list_users()
-            elif action == 'LIST_CONTENT' and len(parts) == 2:
-                client.list_content(parts[1])
-            elif action == 'DISCONNECT':
-                client.disconnect()
-            elif action == 'GET_FILE' and len(parts) == 3:
-                sub = parts[1].split(' ', 1)
-                # For GET_FILE, split differently: parts = cmd.split()
-                tokens = cmd.split()
-                if len(tokens) == 4:
-                    _, user, remote_path, local_name = tokens
-                    client.get_file(user, remote_path, local_name)
+
+            # LIST USERS / LIST CONTENT <user>
+            if action == 'LIST' and len(tokens) >= 2:
+                sub = tokens[1].upper()
+                if sub == 'USERS' and len(tokens) == 2:
+                    client.list_users()
+                elif sub == 'CONTENT' and len(tokens) == 3:
+                    client.list_content(tokens[2])
                 else:
-                    print('Uso: GET_FILE <user_name> <remote_file_path> <local_file_name>')
+                    print('Uso:\n'
+                        '  LIST USERS\n'
+                        '  LIST CONTENT <usuario>')
+                continue
+
+            # Resto de comandos de una palabra
+            if action == 'REGISTER' and len(tokens) == 2:
+                client.register(tokens[1])
+
+            elif action == 'UNREGISTER' and len(tokens) == 2:
+                client.unregister(tokens[1])
+
+            elif action == 'CONNECT' and len(tokens) == 2:
+                client.connect(tokens[1])
+
+            elif action == 'DISCONNECT' and len(tokens) == 1:
+                client.disconnect()
+
+            elif action == 'PUBLISH' and len(tokens) >= 3:
+                # PUBLISH <ruta> <descripción>
+                # La descripción puede contener espacios, la recomponemos:
+                file_path = tokens[1]
+                desc = ' '.join(tokens[2:])
+                client.publish(file_path, desc)
+
+            elif action == 'DELETE' and len(tokens) == 2:
+                client.delete(tokens[1])
+
+            elif action == 'GET_FILE' and len(tokens) == 4:
+                _, user, remote_path, local_name = tokens
+                client.get_file(user, remote_path, local_name)
+
             else:
                 print(f'Comando desconocido: {cmd}')
     except KeyboardInterrupt:
