@@ -2,13 +2,13 @@
  * Código del servidor RPC con la función que llama a las funciones implementadas en timestamp.c
  */
 
-#include "timestamp.h"
+#include "includes/timestamp.h"
 
 // Utilidades de apoyo
-#include "../utils/utils.h"
+#include "includes/utils.h"
 
 // RPC
-#include "rpc.h"
+#include "includes/rpc.h"
 
 bool_t
 imprimir_operacion_1_svc(char *nombre_usuario, char *operacion, char *nombre_fichero, char *timestamp, int *result,  struct svc_req *rqstp)

@@ -7,8 +7,8 @@
 #include "timestamp.h"
 
 // Utiliades de apoyo
-#include "../utils/limits.h"
-#include "../utils/utils.h"
+#include "limits.h"
+#include "utils.h"
 
 int imprimirOperacion(char *nombre_usuario, char *operacion,
                       char *nombre_fichero, char *timestamp) {

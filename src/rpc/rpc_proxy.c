@@ -5,15 +5,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "timestamp.h"
+#include "includes/timestamp.h"
 
 // Utilidades de appyo
-#include "../utils/utils.h"
-#include "../utils/limits.h"
+#include "includes/utils.h"
+#include "includes/limits.h"
 
 
 // RPC
-#include "rpc.h"
+#include "includes/rpc.h"
 
 int imprimirOperacion(char *nombre_usuario, char *operacion, char *nombre_fichero, char *timestamp)
 {
