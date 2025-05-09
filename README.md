@@ -70,6 +70,7 @@ El cliente no requiere compilación, ya que está implementado en Python. Solo a
    - `DISCONNECT`: Desconectarse.
    - `UNREGISTER`: Anular registro.
 
+
 ---
 
 ## Ejemplos de Uso
