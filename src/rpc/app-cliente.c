@@ -6,7 +6,7 @@
 #include "includes/timestamp.h"
  int main()
 {
-    int result = imprimirOperacion("myuser", "CONNECT", " ", "20/3/3");
+    int result = imprimirOperacion("myuser", "OTHER", " ", "20/3/3");
     return result;
 }
 

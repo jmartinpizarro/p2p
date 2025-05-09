@@ -41,12 +41,12 @@ int imprimirOperacion(char *nombre_usuario, char *operacion,
                 "Valor inválido para el nombre del fichero, fuera de límites");
             return 2;
         };
-        printf("%s %s %s %s", nombre_usuario, operacion,nombre_fichero, timestamp);
+        printf("%s %s %s %s\n", nombre_usuario, operacion,nombre_fichero, timestamp);
         return 0;
     }
 
     // Imprimir por pantalla la linea completa con los datos para operaciones
     // sin nombre de fichero
-    printf("%s %s %s", nombre_usuario, operacion, timestamp);
+    printf("%s %s %s\n", nombre_usuario, operacion, timestamp);
     return 0;
 }

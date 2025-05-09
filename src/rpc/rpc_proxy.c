@@ -20,20 +20,20 @@ int imprimirOperacion(char *nombre_usuario, char *operacion, char *nombre_ficher
     // Comprobar que los parámetros sean válidos:
 
     if (checkNombreUsuario(nombre_usuario) != 0) {
-        printe("RPC ERROR",
+        printe("RPC",
                "Valor inválido para el nombre de usuario, fuera de límites");
         return 2;
     };
 
     if (checkOperation(operacion) != 0) {
-        printe("RPC ERROR",
+        printe("RPC",
                "Valor invalido para operación, fuera de límites o formato "
                "incorrecto");
         return 1;
     };
 
     if (checkTimeLen(timestamp) != 0) {
-        printe("RPC ERROR",
+        printe("RPC",
                "Valor inválido para el timestamp, fuera de límites");
         return 2;
     };
@@ -42,7 +42,7 @@ int imprimirOperacion(char *nombre_usuario, char *operacion, char *nombre_ficher
     if (strcmp("PUBLISH", operacion) == 0 || strcmp("DELETE", operacion) == 0) {
         if (checkFilenameLen(nombre_fichero) != 0) {
             printe(
-                "RPC ERROR",
+                "RPC",
                 "Valor inválido para el nombre del fichero, fuera de límites");
             return 2;
         };
@@ -79,7 +79,7 @@ int imprimirOperacion(char *nombre_usuario, char *operacion, char *nombre_ficher
         printe("RPC PROXY", "FINALIZADA CON ERROES imprimirOperacion");
         return result;
     }
-    printe("RPC PROXY", "FINALIZADA CORRECTAMENTE imprimirOperacion");
+    printi("RPC PROXY", "FINALIZADA CORRECTAMENTE imprimirOperacion");
     return result;
 }
 

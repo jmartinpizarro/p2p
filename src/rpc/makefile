@@ -13,8 +13,8 @@ CURRENT_DIR := $(shell pwd)
 
 
 # OBJ
-PROXY_OBJ = $(OBJ_DIR)rpc_proxy.o $(OBJ_DIR)rpc_clnt.o $(OBJ_DIR)rpc_xdr.o $(OBJ_DIR)limits.o
-SRV_OBJ   = $(OBJ_DIR)timestamp.o $(OBJ_DIR)rpc_server.o $(OBJ_DIR)rpc_svc.o $(OBJ_DIR)rpc_xdr.o $(OBJ_DIR)limits.o
+PROXY_OBJ = $(OBJ_DIR)rpc_proxy.o $(OBJ_DIR)rpc_clnt.o $(OBJ_DIR)rpc_xdr.o $(OBJ_DIR)limits.o $(OBJ_DIR)utils.o
+SRV_OBJ   = $(OBJ_DIR)timestamp.o $(OBJ_DIR)rpc_server.o $(OBJ_DIR)rpc_svc.o $(OBJ_DIR)rpc_xdr.o $(OBJ_DIR)limits.o  $(OBJ_DIR)utils.o
 
 
 # Client/Server
@@ -49,6 +49,9 @@ $(OBJ_DIR)timestamp.o: $(INCLUDES_DIR)timestamp.c $(INCLUDES_DIR)timestamp.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)limits.o: $(INCLUDES_DIR)limits.c $(INCLUDES_DIR)limits.h 
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)utils.o: $(INCLUDES_DIR)utils.c $(INCLUDES_DIR)utils.h 
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)rpc_proxy.o: rpc_proxy.c $(INCLUDES_DIR)rpc.h $(INCLUDES_DIR)timestamp.h  $(INCLUDES_DIR)utils.h
