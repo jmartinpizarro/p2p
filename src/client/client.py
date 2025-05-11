@@ -7,12 +7,30 @@ import sys
 from utils.utils import *
 
 class P2PClient:
-    def __init__(self, server_host: str, server_port: int):
+    def __init__(self, server_host: str, server_port: int,
+                 ws_host: str = 'localhost', ws_port: int = 5000):
         self.server_host = server_host
         self.server_port = server_port
+        self.ws_host = ws_host
+        self.ws_port = ws_port
         self.username = None
         self.listen_sock = None
         self.shutdown_event = threading.Event()
+
+    def _get_timestamp(self) -> str:
+        """
+        Calls the datesime web service
+        en formato DD/MM/YYYY HH:MM:SS.
+        """
+        try:
+            url = f"http://{self.ws_host}:{self.ws_port}"
+            resp = requests.get(url, timeout=2)
+            resp.raise_for_status()
+            return resp.text.strip()
+        except Exception as e:
+            # error in terminal
+            print(f"WARNING: no se pudo obtener timestamp: {e}")
+            return ''
 
     def _do_server_op(self, op: str, args: list = []):
         "Send operation to server. Returns code of operation and (may or not) files"
@@ -20,6 +38,11 @@ class P2PClient:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((self.server_host, self.server_port))
                 send_string(s, op)
+                
+                timestamp = self._get_timestamp()
+                if timestamp: # always sends something bcs ''
+                    send_string(s, timestamp)
+                    
                 for a in args:
                     send_string(s, a)
                 code = s.recv(1)

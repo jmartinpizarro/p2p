@@ -16,7 +16,6 @@
 
 // Server socket
 int sock;
-char* timestamp = "test/test/test";
 
 // operations are processed here
 void *handle_client(void *arg) {
@@ -32,10 +31,17 @@ void *handle_client(void *arg) {
         return NULL;
     }
     if (checkOperation(op) == -1) {
-        printe("SERVER", "operacion no valida");
+        printe("SERVER", "operacion fuera de límites");
         close(client_sock);
         return NULL;
     }
+
+    char *timestamp= recv_string(client_sock);
+    if (checkTimeLen(timestamp)) {
+        printe("SERER","datetime fuera de límites");
+        return NULL;
+    }
+
 
     pthread_mutex_lock(&users_mutex);
     unsigned char code = 255;
