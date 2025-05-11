@@ -103,12 +103,12 @@ void *handle_client(void *arg) {
         imprimirOperacion(user, op, path , timestamp);
         free(user);
         free(path);
-    } else if (strcmp(op, "LIST USERS") == 0) {
+    } else if (strcmp(op, "LIST_USERS") == 0) {
         printd("SERVER", "LIST_USERS Started:\nUSER: %s", user);
         code = (char)list_users(user, client_sock);
         imprimirOperacion(user, op, "", timestamp);
         free(user);
-    } else if (strcmp(op, "LIST CONTENT") == 0) {
+    } else if (strcmp(op, "LIST_CONTENT") == 0) {
         char *remote = recv_string(client_sock);
         if (checkNombreUsuario(remote)) {
             printe("SERVER", "Nombre de usuario remoto fuera de límites");
