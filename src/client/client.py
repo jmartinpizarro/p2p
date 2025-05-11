@@ -3,9 +3,9 @@ import os
 import socket
 import sys
 import threading
-import requests
 
-from utils.utils import recv_string, send_string 
+import requests
+from utils.utils import recv_string, send_string
 
 
 class P2PClient:
@@ -31,6 +31,10 @@ class P2PClient:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((self.server_host, self.server_port))
                 send_string(s, op)
+
+                # Send a mock up timestamp to the server
+                send_string(s, "test/python/timestamp test:python:timestamp")
+
 
                 for a in args:
                     send_string(s, a)
