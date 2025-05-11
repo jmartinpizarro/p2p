@@ -7,6 +7,8 @@
 #ifndef LIMITS_H
 #define LIMITS_H
 
+#define MAX_IP 64
+#define MAX_PORT 8
 /*
  * Valor máximo y mínimo para el nombre de usuario y función que debe de
  * comprobarlo
@@ -25,9 +27,9 @@ int checkNombreUsuario(char* nombre_usuario);
 /*Valor máximo y mínimo para la operación y función que debe de comprobarlo*/
 #define MAX_OP_LEN 256
 #define MIN_OP_LEN 1
-#define VAL_OP                                           \
-    {"REGISTER", "UNREGISTER",   "CONNECT",   "PUBLISH", \
-     "DELETE",   "LIST_CONTENT", "DISCONNECT"}
+#define VAL_OP                                            \
+    {"REGISTER", "UNREGISTER",   "CONNECT",    "PUBLISH", \
+     "DELETE",   "LIST_CONTENT", "DISCONNECT", "LIST_USERS"}
 /*
  * Comprueba si la operación es válida, tanto por longitud como por valor.
  * @param operacion Cadena con la operación a validar

@@ -10,7 +10,9 @@
 #include <sys/socket.h>
 
 #include "services.h"
+#include "limits.h"
 #include "server_utils.h"
+#include "utils.h"
 
 static User users[MAX_USERS];
 static int user_count = 0;
@@ -148,23 +150,38 @@ int list_users(char* user, int client_sock) {
         code = 2;
     else {
         code = 0;
+        // Send the code
         send(client_sock, (char[]){0}, 1, 0);
+        
         // count connected
         int n = 0;
-        for (int i = 0; i < user_count; ++i)
-            if (users[i].connected) n++;
+        for (int i = 0; i < user_count; ++i) {
+            if (users[i].connected) {
+                n++;
+            }
+        }
+
+        printd("SERVICES", "Connected users: %d", n);
         send_string(client_sock, snprintf(NULL, 0, "%d", n) >= 0
                                      ? (char[]){0}
                                      : "0");  // placeholder
+        printd("SERVICES", "Enviando datos de connected_users");
+
         // send each
         for (int i = 0; i < user_count; ++i) {
             // only send connected users
             if (!users[i].connected) continue;
-            send_string(client_sock, users[i].username);
-            send_string(client_sock, users[i].ip);
-            char portbuf[16];
-            // Set the end character
-            snprintf(portbuf, 16, "%d", users[i].port);
+            printd("SERVICES", "Username: %s", users[i].username);
+            char namebuf[MAX_USERNAME];
+            snprintf(namebuf, MAX_USERNAME, "%s", users[i].username);
+            send_string(client_sock, namebuf);
+            printd("SERVICES", "IP: %s", users[i].ip);
+            char ipbuf[MAX_IP];
+            snprintf(ipbuf, MAX_IP, "%s", users[i].ip);
+            send_string(client_sock, ipbuf);
+            printd("SERVICES", "PORT: %s", users[i].ip);
+            char portbuf[MAX_PORT];
+            snprintf(portbuf, MAX_PORT, "%d", users[i].port);
             send_string(client_sock, portbuf);
         }
         // pthread_mutex_unlock(&users_mutex);

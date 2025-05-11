@@ -3,6 +3,7 @@ import threading
 import argparse
 import os
 import sys
+import requests
 
 from utils.utils import *
 
@@ -38,29 +39,35 @@ class P2PClient:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((self.server_host, self.server_port))
                 send_string(s, op)
-                
-                timestamp = self._get_timestamp()
-                if timestamp: # always sends something bcs ''
-                    send_string(s, timestamp)
-                    
+
                 for a in args:
                     send_string(s, a)
                 code = s.recv(1)
                 if not code:
                     return None, None
                 code = code[0]
+                print(f"Op: {op}, code {code}")
                 # For LIST_USERS and LIST_CONTENT, collect data if success
-                if op == 'LIST USERS' and code == 0:
-                    n = int(recv_string(s))
+                if op == "LIST_USERS" and code == 0:
+                    print(f"OPERATION LIST_USERS STARTED ON SOCKET {s}")
+                    n = recv_string(s)
+                    n = int(n)
+                    print(f"{n} number of users obtained")
                     users = []
-                    for _ in range(n):
-                        users.append((recv_string(s), recv_string(s), recv_string(s)))
+                    for i in range(n):
+                        username = recv_string(s)
+                        ip = recv_string(s)
+                        port = recv_string(s)
+                        users.append([username,ip,port])
+                        print(f"Values for users {i}: {users[i]}")
+                    print(f"Values in users: {users}")
                     return code, users
-                if op == 'LIST CONTENT' and code == 0:
+                if op == "LIST CONTENT" and code == 0:
                     n = int(recv_string(s))
                     files = [recv_string(s) for _ in range(n)]
                     return code, files
                 return code, None
+        
         except Exception:
             return None, None
 
@@ -169,34 +176,41 @@ class P2PClient:
         else:
             print('DELETE FAIL')
 
+
     def list_users(self):
-        code, users = self._do_server_op('LIST USERS', [self.username])
+        code, users = self._do_server_op("LIST_USERS", [self.username])
         if code == 0:
-            print('LIST_USERS OK')
-            for u, ip, pr in users:
-                print(f"{u} {ip} {pr}")
+            if not users:
+                print("LIST_USERS FAIL, USERS ARE NONETYPE")
+            else:
+                print("LIST_USERS OK")
+                for u, ip, pr in users:
+                    print(f"{u} {ip} {pr}")
         elif code == 1:
-            print('LIST_USERS FAIL, USER DOES NOT EXIST')
+            print("LIST_USERS FAIL, USER DOES NOT EXIST")
         elif code == 2:
-            print('LIST_USERS FAIL, USER NOT CONNECTED')
+            print("LIST_USERS FAIL, USER NOT CONNECTED")
         else:
-            print('LIST_USERS FAIL')
+            print("LIST_USERS FAIL")
 
     def list_content(self, remote: str):
-        code, files = self._do_server_op('LIST CONTENT', [self.username, remote])
+        code, files = self._do_server_op("LIST_CONTENT", [self.username, remote])
         if code == 0:
-            print('LIST_CONTENT OK')
-            for f in files:
-                print(f)
-        elif code == 1:
-            print('LIST_CONTENT FAIL, USER DOES NOT EXIST')
-        elif code == 2:
-            print('LIST_CONTENT FAIL, USER NOT CONNECTED')
-        elif code == 3:
-            print('LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST')
-        else:
-            print('LIST_CONTENT FAIL')
+            if not files:
+                    print("LIST_CONTENT FAIL, FILES ARE NONETYPE")
+            else:
+                print("LIST_CONTENT OK")
+                for f in files:
+                    print(f)
 
+        elif code == 1:
+            print("LIST_CONTENT FAIL, USER DOES NOT EXIST")
+        elif code == 2:
+            print("LIST_CONTENT FAIL, USER NOT CONNECTED")
+        elif code == 3:
+            print("LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST")
+        else:
+            print("LIST_CONTENT FAIL")
     def disconnect(self):
         code, _ = self._do_server_op('DISCONNECT', [self.username])
         if code == 0:

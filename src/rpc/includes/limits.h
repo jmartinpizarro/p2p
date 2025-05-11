@@ -24,7 +24,7 @@ int checkNombreUsuario(char* nombre_usuario);
 #define MIN_OP_LEN 1
 #define VAL_OP                                           \
     {"REGISTER", "UNREGISTER",   "CONNECT",   "PUBLISH", \
-     "DELETE",   "LIST_CONTENT", "DISCONNECT"}
+     "DELETE",   "LIST_CONTENT", "DISCONNECT", "LIST_USERS"}
 /**
  * Comprueba si la operación es válida, tanto por longitud como por valor.
  * @param operacion Cadena con la operación a validar

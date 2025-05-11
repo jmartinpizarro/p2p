@@ -32,16 +32,16 @@ void *handle_client(void *arg) {
     }
     if (checkOperation(op) == -1) {
         printe("SERVER", "operacion fuera de límites");
+        printd("SERVER", "operacion: %s", op);
         close(client_sock);
         return NULL;
     }
-
-    char *timestamp= recv_string(client_sock);
-    if (checkTimeLen(timestamp)) {
-        printe("SERER","datetime fuera de límites");
-        return NULL;
-    }
-
+    char *timestamp = "test/tets/test test:test:test";
+    // char *timestamp= recv_string(client_sock);
+    // if (checkTimeLen(timestamp)) {
+    //     printe("SERVER","datetime fuera de límites");
+    //     return NULL;
+    // }
 
     pthread_mutex_lock(&users_mutex);
     unsigned char code = 255;
@@ -58,23 +58,27 @@ void *handle_client(void *arg) {
     if (strcmp(op, "REGISTER") == 0) {
         printd("SERVER", "REGISTER Started:\nUSER: %s", user);
         code = (char)register_user(user);
+        send(client_sock, (char[]){code}, 1, 0);
         imprimirOperacion(user, op, "", timestamp);
         free(user);
     } else if (strcmp(op, "UNREGISTER") == 0) {
         printd("SERVER", "UNREGISTER Started:\nUSER: %s", user);
         code = (char)unregister_user(user);
         imprimirOperacion(user, op, "", timestamp);
+        send(client_sock, (char[]){code}, 1, 0);
         free(user);
     } else if (strcmp(op, "CONNECT") == 0) {
         char *port_s = recv_string(client_sock);
         printd("SERVER", "CONNECT Started:\nUSER: %s\nPORT: %s", user, port_s);
         code = (char)connect_user(user, port_s, addr);
         imprimirOperacion(user, op, "", timestamp);
+        send(client_sock, (char[]){code}, 1, 0);
         free(user);
         free(port_s);
     } else if (strcmp(op, "DISCONNECT") == 0) {
         printd("SERVER", "DISCONNECT Started:\nUSER: %s", user);
         code = (char)disconnect_user(user);
+        send(client_sock, (char[]){code}, 1, 0);
         imprimirOperacion(user, op, "", timestamp);
         free(user);
     } else if (strcmp(op, "PUBLISH") == 0) {
@@ -89,7 +93,8 @@ void *handle_client(void *arg) {
         printd("SERVER", "PUBLISH Started:\nUSER: %s\nPATH: %s\nDESC: %s", user,
                path, desc);
         code = (char)publish(user, path, desc);
-        imprimirOperacion(user, op, path , timestamp);
+        send(client_sock, (char[]){code}, 1, 0);
+        imprimirOperacion(user, op, path, timestamp);
         free(user);
         free(path);
         free(desc);
@@ -100,7 +105,8 @@ void *handle_client(void *arg) {
         }
         printd("SERVER", "DELETE Started:\nUSER: %s\nPATH: %s", user, path);
         code = (char)delete_s(user, path);
-        imprimirOperacion(user, op, path , timestamp);
+        send(client_sock, (char[]){code}, 1, 0);
+        imprimirOperacion(user, op, path, timestamp);
         free(user);
         free(path);
     } else if (strcmp(op, "LIST_USERS") == 0) {
@@ -120,15 +126,12 @@ void *handle_client(void *arg) {
         free(user);
         free(remote);
     }
-    // send code for operations without additional data
-    send(client_sock, (char[]){code}, 1, 0);
     pthread_mutex_unlock(&users_mutex);
     close(client_sock);
     return NULL;
 }
 
-void controlC()
-{
+void controlC() {
     close(sock);
     printf("\nSERVIDOR CERRADO DE FORMA SEGURA: CTRL+C\n");
     exit(0);
