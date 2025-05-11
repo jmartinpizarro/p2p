@@ -40,6 +40,10 @@ class P2PClient:
                 s.connect((self.server_host, self.server_port))
                 send_string(s, op)
 
+                timestamp = self._get_timestamp()
+                if timestamp: # always sends something bcs ''
+                    send_string(s, timestamp)
+
                 for a in args:
                     send_string(s, a)
                 code = s.recv(1)

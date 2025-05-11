@@ -36,12 +36,12 @@ void *handle_client(void *arg) {
         close(client_sock);
         return NULL;
     }
-    char *timestamp = "test/tets/test test:test:test";
-    // char *timestamp= recv_string(client_sock);
-    // if (checkTimeLen(timestamp)) {
-    //     printe("SERVER","datetime fuera de límites");
-    //     return NULL;
-    // }
+    //char *timestamp = "test/tets/test test:test:test";
+     char *timestamp= recv_string(client_sock);
+     if (checkTimeLen(timestamp)) {
+         printe("SERVER","datetime fuera de límites");
+         return NULL;
+     }
 
     pthread_mutex_lock(&users_mutex);
     unsigned char code = 255;
