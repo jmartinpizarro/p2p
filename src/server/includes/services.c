@@ -152,7 +152,7 @@ int list_users(char* user, int client_sock) {
         code = 0;
         // Send the code
         send(client_sock, (char[]){0}, 1, 0);
-        
+
         // count connected
         int n = 0;
         for (int i = 0; i < user_count; ++i) {
@@ -163,7 +163,7 @@ int list_users(char* user, int client_sock) {
 
         printd("SERVICES", "Connected users: %d", n);
         char connectedbuf[MAX_USERS];
-        snprintf(connectedbuf,MAX_USERS,"%d", n);
+        snprintf(connectedbuf, MAX_USERS, "%d", n);
         send_string(client_sock, connectedbuf);
 
         printd("SERVICES", "Enviando datos de connected_users");
@@ -207,9 +207,12 @@ int list_content(char* user, char* remote, int client_sock) {
         char buf[16];
         snprintf(buf, 16, "%d", r->content_count);
         send_string(client_sock, buf);
-        for (int i = 0; i < r->content_count; ++i)
-            send_string(client_sock, r->content[i].path);
-        // pthread_mutex_unlock(&users_mutex);
+        for (int i = 0; i < r->content_count; ++i) {
+            char buf[MAX_FILEPATH];
+            snprintf(buf, MAX_FILEPATH, "%s", r->content[i].path);
+            send_string(client_sock, buf);
+            // pthread_mutex_unlock(&users_mutex);
+        }
     }
     return code;
 }

@@ -41,24 +41,18 @@ class P2PClient:
                 if not code:
                     return None, None
                 code = code[0]
-                print(f"Op: {op}, code {code}")
                 # For LIST_USERS and LIST_CONTENT, collect data if success
                 if op == "LIST_USERS" and code == 0:
-                    print(f"OPERATION LIST_USERS STARTED ON SOCKET {s}")
                     n = recv_string(s)
                     n = int(n)
-                    print(f"{n} number of users obtained")
                     users = []
                     for i in range(n):
                         username = recv_string(s)
                         ip = recv_string(s)
                         port = recv_string(s)
-                        print("Append new values")
                         users.append([username,ip,port])
-                        print(f"Values for users {i}: {users[i]}")
-                    print(f"Values in users: {users}")
                     return code, users
-                if op == "LIST CONTENT" and code == 0:
+                if op == "LIST_CONTENT" and code == 0:
                     n = int(recv_string(s))
                     files = [recv_string(s) for _ in range(n)]
                     return code, files

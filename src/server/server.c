@@ -24,6 +24,7 @@ void *handle_client(void *arg) {
     static pthread_mutex_t users_mutex = PTHREAD_MUTEX_INITIALIZER;
     free(arg);
 
+    pthread_mutex_lock(&users_mutex);
     // Se recibe la operación para poder realizar uno u otro servicio según esta
     char *op = recv_string(client_sock);
     if (!op) {
@@ -43,7 +44,6 @@ void *handle_client(void *arg) {
          return NULL;
      }
 
-    pthread_mutex_lock(&users_mutex);
     unsigned char code = 255;
 
     char *user = recv_string(client_sock);
