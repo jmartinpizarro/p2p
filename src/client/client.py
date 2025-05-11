@@ -53,6 +53,7 @@ class P2PClient:
                         username = recv_string(s)
                         ip = recv_string(s)
                         port = recv_string(s)
+                        print("Append new values")
                         users.append([username,ip,port])
                         print(f"Values for users {i}: {users[i]}")
                     print(f"Values in users: {users}")

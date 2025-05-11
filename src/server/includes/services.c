@@ -162,9 +162,10 @@ int list_users(char* user, int client_sock) {
         }
 
         printd("SERVICES", "Connected users: %d", n);
-        send_string(client_sock, snprintf(NULL, 0, "%d", n) >= 0
-                                     ? (char[]){0}
-                                     : "0");  // placeholder
+        char connectedbuf[MAX_USERS];
+        snprintf(connectedbuf,MAX_USERS,"%d", n);
+        send_string(client_sock, connectedbuf);
+
         printd("SERVICES", "Enviando datos de connected_users");
 
         // send each

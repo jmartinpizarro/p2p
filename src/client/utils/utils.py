@@ -9,7 +9,7 @@ def recv_string(sock: socket.socket) -> str:
     while True:
         print("Byte recibiendo")
         byte = sock.recv(1)
-        print("Byte recibido")
+        print(f"Byte recibido:{byte}")
         if not byte:
             print("Conexión cerrada en recv_string")
             raise ConnectionError("Conexión cerrada inesperadamente")
