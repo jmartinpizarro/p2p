@@ -12,9 +12,11 @@
 #include "includes/services.h"
 #include "includes/utils.h"
 #include "includes/limits.h"
+#include "includes/timestamp.h"
 
 // Server socket
 int sock;
+char* timestamp = "test/test/test";
 
 // operations are processed here
 void *handle_client(void *arg) {
@@ -50,20 +52,24 @@ void *handle_client(void *arg) {
     if (strcmp(op, "REGISTER") == 0) {
         printd("SERVER", "REGISTER Started:\nUSER: %s", user);
         code = (char)register_user(user);
+        imprimirOperacion(user, op, "", timestamp);
         free(user);
     } else if (strcmp(op, "UNREGISTER") == 0) {
         printd("SERVER", "UNREGISTER Started:\nUSER: %s", user);
         code = (char)unregister_user(user);
+        imprimirOperacion(user, op, "", timestamp);
         free(user);
     } else if (strcmp(op, "CONNECT") == 0) {
         char *port_s = recv_string(client_sock);
         printd("SERVER", "CONNECT Started:\nUSER: %s\nPORT: %s", user, port_s);
         code = (char)connect_user(user, port_s, addr);
+        imprimirOperacion(user, op, "", timestamp);
         free(user);
         free(port_s);
     } else if (strcmp(op, "DISCONNECT") == 0) {
         printd("SERVER", "DISCONNECT Started:\nUSER: %s", user);
         code = (char)disconnect_user(user);
+        imprimirOperacion(user, op, "", timestamp);
         free(user);
     } else if (strcmp(op, "PUBLISH") == 0) {
         char *path = recv_string(client_sock);
@@ -77,6 +83,7 @@ void *handle_client(void *arg) {
         printd("SERVER", "PUBLISH Started:\nUSER: %s\nPATH: %s\nDESC: %s", user,
                path, desc);
         code = (char)publish(user, path, desc);
+        imprimirOperacion(user, op, path , timestamp);
         free(user);
         free(path);
         free(desc);
@@ -87,11 +94,13 @@ void *handle_client(void *arg) {
         }
         printd("SERVER", "DELETE Started:\nUSER: %s\nPATH: %s", user, path);
         code = (char)delete_s(user, path);
+        imprimirOperacion(user, op, path , timestamp);
         free(user);
         free(path);
     } else if (strcmp(op, "LIST USERS") == 0) {
         printd("SERVER", "LIST_USERS Started:\nUSER: %s", user);
         code = (char)list_users(user, client_sock);
+        imprimirOperacion(user, op, "", timestamp);
         free(user);
     } else if (strcmp(op, "LIST CONTENT") == 0) {
         char *remote = recv_string(client_sock);
@@ -101,6 +110,7 @@ void *handle_client(void *arg) {
         }
         printd("SERVER", "LIST_CONTENT Started:\nUSER: %s\nREMOTE: %s", user);
         code = (char)list_content(user, remote, client_sock);
+        imprimirOperacion(user, op, "", timestamp);
         free(user);
         free(remote);
     }
@@ -111,7 +121,7 @@ void *handle_client(void *arg) {
     return NULL;
 }
 
-void controlC(int sig)
+void controlC()
 {
     close(sock);
     printf("\nSERVIDOR CERRADO DE FORMA SEGURA: CTRL+C\n");

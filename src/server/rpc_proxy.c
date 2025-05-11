@@ -55,15 +55,14 @@ int imprimirOperacion(char *nombre_usuario, char *operacion, char *nombre_ficher
     char *host = getenv("IP_TUPLAS");
     if (NULL == host) {
         printf("ERROR: please use IP_TUPLAS=server-host-name first\n");
-        return 2;
-        //exit(-1);
+        exit(-1);
     }
 
     // Inicializar sesion RPC
     clnt = clnt_create(host, TIMESTAMP_PROG, TIMESTAMP_VERS, "tcp");
     if (clnt == NULL) {
         clnt_pcreateerror(host);
-        return 2;
+        exit(-1);
     }
 
     // Llamada a la función
@@ -72,7 +71,7 @@ int imprimirOperacion(char *nombre_usuario, char *operacion, char *nombre_ficher
     // Comprobamos el valor de la función del RPC
     if (retval != RPC_SUCCESS) {
         clnt_perror(clnt, "destroy_1: ");
-        return 2;
+        exit(-1);
     }
     clnt_destroy(clnt);
     
