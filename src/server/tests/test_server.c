@@ -14,7 +14,8 @@
 // Variables globales para tests
 static struct sockaddr_in test_addr;
 
-// Función para inicializar entorno de pruebas
+// Función para inicializar entorno de pruebas, crear varias variables dummy que
+// usar en el resto de tests
 void setup_test_environment() {
     // Inicializar la dirección para pruebas de conexión
     test_addr.sin_family = AF_INET;
@@ -190,7 +191,7 @@ int test_connect_user_normal() {
     // Verificar que el usuario está conectado
     User* user = find_user("userToConnect");
     if (user == NULL || user->connected != 1) {
-        printd("TEST SERVICES",
+        printe("TEST SERVICES",
                "test_connect_user_normal no aprobado - Usuario no está "
                "conectado después de connect_user");
         return -1;
