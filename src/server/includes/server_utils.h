@@ -30,5 +30,9 @@ char* recv_string(int sock);
 */
 User* find_user(const char *name);
 
+/*
+* @brief Función que define que se hará en caso de que se presiones control+c en la terminal en la que esta corriendo el servidor. En este caso cerrar el socket
+*/
+void controlC(int sig);
 
 #endif // !USER_UTILS_H

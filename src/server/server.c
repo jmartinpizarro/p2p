@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <arpa/inet.h>
@@ -11,6 +12,9 @@
 #include "includes/services.h"
 #include "includes/utils.h"
 #include "includes/limits.h"
+
+// Server socket
+int sock;
 
 // operations are processed here
 void *handle_client(void *arg) {
@@ -107,13 +111,21 @@ void *handle_client(void *arg) {
     return NULL;
 }
 
+void controlC(int sig)
+{
+    close(sock);
+    printf("\nSERVIDOR CERRADO DE FORMA SEGURA: CTRL+C\n");
+    exit(0);
+}
+
 int main(int argc, char *argv[]) {
+    signal(SIGINT, controlC);
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <port>\n", argv[0]);
         return 1;
     }
     int port = atoi(argv[1]);
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    sock = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in serv;
     serv.sin_family = AF_INET;
     serv.sin_addr.s_addr = INADDR_ANY;
