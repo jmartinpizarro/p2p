@@ -3,11 +3,6 @@
 #include <stdlib.h>
 #include "limits.h"
 
-/**
- * Comprueba si el nombre de usuario es válido basándose en los valres de limits.h
- * @param nombre_usuario Cadena con el nombre de usuario a validar
- * @return 0 si el nombre es válido, -1 en caso contrario
- */
 int checkNombreUsuario(char* nombre_usuario) {
     // Comprobamos si el puntero es nulo
     if (nombre_usuario == NULL) {
@@ -23,11 +18,6 @@ int checkNombreUsuario(char* nombre_usuario) {
     return 0;
 }
 
-/**
- * Comprueba si la operación es válida, tanto por longitud como por valor.
- * @param operacion Cadena con la operación a validar
- * @return 0 si la operación es válida, -1 en caso contrario
- */
 int checkOperation(char* operacion) {
     // Comprobamos si el puntero es nulo
     if (operacion == NULL) {
@@ -53,11 +43,6 @@ int checkOperation(char* operacion) {
     return -1;
 }
 
-/**
- * Comprueba si el nombre del fichero tiene una longitud válida según lo puesto en limits.h
- * @param nombre_fichero Cadena con el nombre del fichero a validar
- * @return 0 si la longitud es válida, -1 en caso contrario
- */
 int checkFilenameLen(char* nombre_fichero) {
     // Comprobamos si el puntero es nulo
     if (nombre_fichero == NULL) {
@@ -73,11 +58,6 @@ int checkFilenameLen(char* nombre_fichero) {
     return 0;
 }
 
-/**
- * Comprueba si el timestamp tiene una longitud válida.
- * @param timestamp Cadena con el timestamp a validar
- * @return 0 si la longitud es válida, -1 en caso contrario
- */
 int checkTimeLen(char* timestamp) {
     // Comprobamos si el puntero es nulo
     if (timestamp == NULL) {

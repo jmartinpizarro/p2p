@@ -18,7 +18,7 @@ void *handle_client(void *arg) {
     struct sockaddr_in addr = *(struct sockaddr_in *)(((int *)arg) + 1);
     static pthread_mutex_t users_mutex = PTHREAD_MUTEX_INITIALIZER;
     free(arg);
-    
+
     // Se recibe la operación para poder realizar uno u otro servicio según esta
     char *op = recv_string(client_sock);
     if (!op) {
@@ -26,62 +26,76 @@ void *handle_client(void *arg) {
         return NULL;
     }
     if (checkOperation(op) == -1) {
-        printe("SERVER","operacion no valida");
+        printe("SERVER", "operacion no valida");
         close(client_sock);
-        return NULL; 
+        return NULL;
     }
-    printd("SERVER","Operacion %s recibida, empezando a gestionar peticion",op);
 
     pthread_mutex_lock(&users_mutex);
     unsigned char code = 255;
 
+    char *user = recv_string(client_sock);
+    if (checkNombreUsuario(user)) {
+        printe("SERVER", "Nombre de usuario fuera de límites");
+        return NULL;
+    }
+
+    // DEBUG AND PRINTING
+    printf("OPERATION %s FROM %s\n", op, user);
+
     if (strcmp(op, "REGISTER") == 0) {
-        char *user = recv_string(client_sock);
-        printd("SERVER", "REGISTER Started:\nUSER: %s",user);
+        printd("SERVER", "REGISTER Started:\nUSER: %s", user);
         code = (char)register_user(user);
         free(user);
     } else if (strcmp(op, "UNREGISTER") == 0) {
-        char *user = recv_string(client_sock);
-        printd("SERVER", "UNREGISTER Started:\nUSER: %s",user);
+        printd("SERVER", "UNREGISTER Started:\nUSER: %s", user);
         code = (char)unregister_user(user);
         free(user);
     } else if (strcmp(op, "CONNECT") == 0) {
-        char *user = recv_string(client_sock);
         char *port_s = recv_string(client_sock);
-        printd("SERVER", "CONNECT Started:\nUSER: %s\nPORT: %s",user, port_s);
+        printd("SERVER", "CONNECT Started:\nUSER: %s\nPORT: %s", user, port_s);
         code = (char)connect_user(user, port_s, addr);
         free(user);
         free(port_s);
     } else if (strcmp(op, "DISCONNECT") == 0) {
-        char *user = recv_string(client_sock);
-        printd("SERVER", "DISCONNECT Started:\nUSER: %s",user);
+        printd("SERVER", "DISCONNECT Started:\nUSER: %s", user);
         code = (char)disconnect_user(user);
         free(user);
     } else if (strcmp(op, "PUBLISH") == 0) {
-        char *user = recv_string(client_sock);
         char *path = recv_string(client_sock);
+        if (checkFilenameLen(path)) {
+            printe("SERVER", "Nombre de archivo fuera de límites");
+        }
         char *desc = recv_string(client_sock);
-        printd("SERVER", "PUBLISH Started:\nUSER: %s\nPATH: %s\nDESC: %s",user, path, desc);
+        if (checkDesc(desc)) {
+            printe("SERVER", "Descripcion fuera de límites");
+        }
+        printd("SERVER", "PUBLISH Started:\nUSER: %s\nPATH: %s\nDESC: %s", user,
+               path, desc);
         code = (char)publish(user, path, desc);
         free(user);
         free(path);
         free(desc);
     } else if (strcmp(op, "DELETE") == 0) {
-        char *user = recv_string(client_sock);
         char *path = recv_string(client_sock);
-        printd("SERVER", "DELETE Started:\nUSER: %s\nPATH: %s",user, path);
+        if (checkFilenameLen(path)) {
+            printe("SERVER", "Nombre de archivo fuera de límites");
+        }
+        printd("SERVER", "DELETE Started:\nUSER: %s\nPATH: %s", user, path);
         code = (char)delete_s(user, path);
         free(user);
         free(path);
     } else if (strcmp(op, "LIST USERS") == 0) {
-        char *user = recv_string(client_sock);
-        printd("SERVER", "LIST_USERS Started:\nUSER: %s",user);
+        printd("SERVER", "LIST_USERS Started:\nUSER: %s", user);
         code = (char)list_users(user, client_sock);
         free(user);
     } else if (strcmp(op, "LIST CONTENT") == 0) {
-        char *user = recv_string(client_sock);
         char *remote = recv_string(client_sock);
-        printd("SERVER", "LIST_CONTENT Started:\nUSER: %s\nREMOTE: %s",user);
+        if (checkNombreUsuario(remote)) {
+            printe("SERVER", "Nombre de usuario remoto fuera de límites");
+            return NULL;
+        }
+        printd("SERVER", "LIST_CONTENT Started:\nUSER: %s\nREMOTE: %s", user);
         code = (char)list_content(user, remote, client_sock);
         free(user);
         free(remote);

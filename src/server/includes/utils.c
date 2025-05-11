@@ -64,7 +64,7 @@ void printe(const char *name, const char *format) {
     // Only proceed if DEBUG is true
     if (ERROR) {
         printf(RED);
-        printf("=== ERROR: %s === ", name);
+        print("=== ERROR: %s === ", name);
         perror(format);
         printf("\n");
         printf(RESET);
