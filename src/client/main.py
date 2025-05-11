@@ -1,7 +1,19 @@
 from client import P2PClient
+from spyne.server.wsgi import WsgiApplication
 import argparse
 import sys
 
+from spyne import Application, ServiceBase, Unicode, rpc
+from spyne.protocol.soap import Soap11
+from spyne.server.wsgi import WsgiApplication
+import dataService
+
+app = Application(
+    [DateTimeService],
+    tns="spyne.examples.datetime",
+    in_protocol=Soap11(validator="lxml"),
+    out_protocol=Soap11(),
+)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Cliente P2P')
     parser.add_argument('-s', '--server', required=True, help='IP o nombre del servidor')
@@ -9,6 +21,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     client = P2PClient(args.server, args.port)
+
+    from wsgiref.simple_server import make_server
+
+    # run on 5000, localhost
+    server = make_server("0.0.0.0", 5000, WsgiApplication(app))
+    print("SOAP service running at http://0.0.0.0:5000")
+    print("WSDL available at http://0.0.0.0:5000/?wsdl")
+    server.serve_forever()
+
     try:
         while True:
             cmd = input('c> ').strip()
