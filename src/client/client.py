@@ -4,7 +4,6 @@ import socket
 import sys
 import threading
 
-import requests
 from utils.utils import recv_string, send_string
 
 
@@ -238,10 +237,13 @@ class P2PClient:
             print("GET_FILE FAIL")
             return
         peer = None
-        for u, ip, pr in users:
-            if u == remote:
-                peer = (ip, int(pr))
-                break
+        if (users):
+            for u, ip, pr in users:
+                if u == remote:
+                    peer = (ip, int(pr))
+                    break
+        else:
+            print("GET_FILE FAIL, USER IS NONETYPE")
         if not peer:
             print("GET_FILE FAIL, USER NOT FOUND")
             return

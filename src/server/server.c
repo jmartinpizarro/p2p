@@ -131,7 +131,7 @@ void *handle_client(void *arg) {
     return NULL;
 }
 
-void controlC() {
+void controlC(int sig) {
     close(sock);
     printf("\nSERVIDOR CERRADO DE FORMA SEGURA: CTRL+C\n");
     exit(0);
